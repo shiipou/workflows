@@ -28,6 +28,6 @@ jobs:
     - name: Delegate event to remote repository
       run: |
         curl -X POST \
-          -H "Authorization: token ${{ secrets.token }}" \
+          -H "Authorization: token ${{ inputs.token }}" \
           -d '${{ inputs.params }}' \
           https://api.github.com/repos/${{ inputs.target_repository }}/actions/workflows/${{ inputs.target_workflow }}/dispatches
