@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Delegate event to remote repository
-      id: create_pr
       run: |
         curl -X POST \
           -H "Authorization: token ${{ secrets.token }}" \
