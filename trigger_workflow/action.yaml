@@ -15,9 +15,10 @@ on:
         description: 'The workflow name to be triggered'
         required: true
         type: string
-    secrets:
       token:
+        description: 'The GitHub Token to call GitHub API'
         required: true
+        type: string
 
 jobs:
   trigger_workflow:
