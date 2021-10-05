@@ -1,30 +1,26 @@
 name: Trigger Workflow
 
-on:
-  workflow_call:
-    inputs:
-      params:
-        description: 'A JSON representation of params need to be passed to the target workflow'
-        required: false
-        type: string
-      target_repository:
-        description: 'The repository org/name to trigger the workflow'
-        required: true
-        type: string
-      target_workflow:
-        description: 'The workflow name to be triggered'
-        required: true
-        type: string
-      token:
-        description: 'The GitHub Token to call GitHub API'
-        required: true
-        type: string
+inputs:
+  params:
+    description: 'A JSON representation of params need to be passed to the target workflow'
+    required: false
+    type: string
+  target_repository:
+    description: 'The repository org/name to trigger the workflow'
+    required: true
+    type: string
+  target_workflow:
+    description: 'The workflow name to be triggered'
+    required: true
+    type: string
+  token:
+    description: 'The GitHub Token to call GitHub API'
+    required: true
+    type: string
 
-jobs:
-  trigger_workflow:
-    name: Pass input and secrets to my-action
-    runs-on: ubuntu-latest
-    steps:
+runs:
+  using: "composite"
+  steps:
     - name: Delegate event to remote repository
       run: |
         curl -X POST \
