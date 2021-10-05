@@ -7,9 +7,10 @@ on:
         description: 'The PR name to update or create'
         required: true
         type: string
-    secrets:
       token:
+        description: 'The GitHub Token to call GitHub API'
         required: true
+        type: string
 
 jobs:
   example_job:
