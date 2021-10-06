@@ -36,7 +36,7 @@ runs:
             echo -e "\nCalling https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches\n"
             
             result=$(curl --request POST \
-              -H "Content-Type: application/json"
+              -H "Content-Type: application/json" \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token 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" \
               --data "{\"inputs\": ${PARAMS}}" \
