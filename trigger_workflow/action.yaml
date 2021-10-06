@@ -41,12 +41,10 @@ runs:
               -H "Authorization: token ${{ inputs.token }}" \
               -d "{\"inputs\": ${PARAMS}}" \
               https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches)
+            
             echo -e "${result}\n"
-            if [ ! "$(echo ${result} | grep -i '"message": "Not Found"')" ]; then
-              echo -e "Ok\n"
-            else
-              echo -e "Failed\n"
-            fi
+            
+            [ ! "$(echo ${result} | grep -i '"message": "Not Found"')" ]
         done
 
         
