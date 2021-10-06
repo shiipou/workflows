@@ -34,17 +34,17 @@ runs:
         
         for repo in ${REPOSITORIES//,/ }
         do
-            echo " Calling https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches with data=\"{\\\"inputs\\\": \\\"${PARAMS//[$'"']/'\\\"'}\\\"}\""
+            echo -e "\nCalling https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches with data=${PARAMS//[$'"']/'\"'}\n\n"
             
             result=$(curl -X POST \
               -H "Authorization: token ${{ inputs.token }}" \
-              -d "{\"inputs\": ${PARAMS//[$'"']/'\"'}\"}" \
+              -d "{\"inputs\": ${PARAMS//[$'"']/'\\\"'}\"}" \
               https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches)
-            echo ${result}
+            echo -e "${result}\n"
             if [ ! "$(echo ${result} | grep -i '"message": "Not Found"')" ]; then
-              echo 'Ok'
+              echo -e "Ok\n"
             else
-              echo 'Failed'
+              echo -e "Failed\n"
             fi
         done
 
