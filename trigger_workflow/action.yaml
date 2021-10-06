@@ -32,11 +32,10 @@ runs:
         
         echo "PARAMS=$PARAMS"
         
-        
         for repo in $(echo ${REPOSITORIES//,/ }); do
             echo -e "\nCalling https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches\n"
             
-            result=$(curl -v -X POST \
+            result=$(curl -X POST \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token ${{ inputs.token }}" \
               -d "{\"inputs\": \"${PARAMS//[$'"']/'\"'}\"}" \
