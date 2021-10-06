@@ -34,11 +34,12 @@ runs:
         
         for repo in ${REPOSITORIES//,/ }
         do
-            # call your procedure/other scripts here below
-            [ ! "$(curl -X POST \
+            result=$(curl -X POST \
               -H "Authorization: token ${{ inputs.token }}" \
               -d "${PARAMS}" \
-              https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i '"message": "Not Found"')" ]
+              https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches)
+            echo ${result}
+            [ ! "$(echo ${result} | grep -i '"message": "Not Found"')" ]
         done
 
         
