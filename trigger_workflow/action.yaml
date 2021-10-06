@@ -28,7 +28,7 @@ runs:
         PARAMS: ${{ inputs.params }}
       run: |
         PARAMS=${PARAMS//[$'\n']}
-        PARAMS=${PARAMS//[$'"']/'\"'}
+        # PARAMS=${PARAMS//[$'"']/'\"'}
         
         echo "PARAMS=$PARAMS"
         
