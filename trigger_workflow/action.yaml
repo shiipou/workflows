@@ -28,5 +28,5 @@ runs:
       run: |
         [ ! "$(curl -X POST \
           -H "Authorization: token ${{ inputs.token }}" \
-          -d "${PARAMS//[:space:]/}" \
+          -d "${PARAMS//\\n/\\\\n}" \
           https://api.github.com/repos/${{ inputs.target_repository }}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i '"message": "Not Found"')" ]
