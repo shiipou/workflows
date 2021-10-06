@@ -30,6 +30,8 @@ runs:
         PARAMS=${PARAMS//[$'\n']}
         PARAMS=${PARAMS//[$'"']/'\"'}
         
+        echo "PARAMS=$PARAMS"
+        
         for repo in ${REPOSITORIES//,/ }
         do
             # call your procedure/other scripts here below
