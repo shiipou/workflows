@@ -24,7 +24,7 @@ runs:
     - name: Delegate event to remote repository
       shell: bash
       run: |
-        [ ! curl -X POST \
+        [ ! "$(curl -X POST \
           -H "Authorization: token ${{ inputs.token }}" \
           -d '${{ inputs.params }}' \
-          https://api.github.com/repos/${{ inputs.target_repository }}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i "message": "Not Found" ]
+          https://api.github.com/repos/${{ inputs.target_repository }}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i '"message": "Not Found"')" ]
