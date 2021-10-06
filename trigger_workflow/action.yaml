@@ -6,7 +6,7 @@ inputs:
     required: false
     type: string
   target_repository:
-    description: 'The repository org/name to trigger the workflow'
+    description: 'The repository org/name to trigger the workflow. Can be a comma separated string representation of an array'
     required: true
     type: string
   target_workflow:
@@ -24,9 +24,16 @@ runs:
     - name: Delegate event to remote repository
       shell: bash
       env:
-        PARAMS: '${{ inputs.params }}'
+        REPOSITORIES: ${{ inputs.target_repository }}
+        PARAMS: ${{ inputs.params }}
       run: |
-        [ ! "$(curl -X POST \
-          -H "Authorization: token ${{ inputs.token }}" \
-          -d "${PARAMS//\\n/\\\\n}" \
-          https://api.github.com/repos/${{ inputs.target_repository }}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i '"message": "Not Found"')" ]
+        for repo in ${REPOSITORIES//,/ }
+        do
+            # call your procedure/other scripts here below
+            [ ! "$(curl -X POST \
+              -H "Authorization: token ${{ inputs.token }}" \
+              -d "${PARAMS//\\n/\\\\n}" \
+              https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i '"message": "Not Found"')" ]
+        done
+
+        
