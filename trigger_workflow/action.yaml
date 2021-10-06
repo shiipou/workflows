@@ -27,12 +27,15 @@ runs:
         REPOSITORIES: ${{ inputs.target_repository }}
         PARAMS: ${{ inputs.params }}
       run: |
+        PARAMS=${PARAMS//[$'\n']}
+        PARAMS=${PARAMS//[$'"']/'\"'}
+        
         for repo in ${REPOSITORIES//,/ }
         do
             # call your procedure/other scripts here below
             [ ! "$(curl -X POST \
               -H "Authorization: token ${{ inputs.token }}" \
-              -d "${PARAMS//\\n/\\\\n}" \
+              -d "${PARAMS}" \
               https://api.github.com/repos/${repo}/actions/workflows/${{ inputs.target_workflow }}/dispatches | grep -i '"message": "Not Found"')" ]
         done
 
