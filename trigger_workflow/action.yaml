@@ -5,7 +5,7 @@ inputs:
     description: 'A JSON representation of params need to be passed to the target workflow'
     required: false
     type: string
-  ref:
+  target_ref:
     description: 'The ref where you want to run the workflow'
     required: true
     type: string
