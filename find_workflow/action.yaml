@@ -37,19 +37,19 @@ runs:
         runs="$(gh run list -w "${{ inputs.workflow}}" -L100)"
         branch=''
                 
-        oldIFS=$IFS
+        oldIFS="$IFS"
         IFS="
         ";
         for run in $(echo ${runs});
-          branch=$(echo "${run}" | cut -f5)
+          branch="$(echo "${run}" | cut -f5)"
           
           if [ "${branch}" == "${{ inputs.branch }}" ]; then
-            status=$(echo "${run}" | cut -f2)
+            status="$(echo "${run}" | cut -f2)"
             if [[ -z "${{ inputs.status }}" || "${status}" == "${{ inputs.status }}" ]]; then
-              id=$(echo "${run}" | cut -f7)
+              id="$(echo "${run}" | cut -f7)"
               echo "::set-output name=run::${id}"
               break
             fi
           fi
         done
-        IFS=$oldIFS
+        IFS="$oldIFS"
