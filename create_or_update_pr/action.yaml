@@ -59,6 +59,6 @@ runs:
           gh pr comment "$id" -b "${info}"
         else
           git push -u origin "${branch}"
-          info="$(git log --no-decorate --pretty=oneline origin..HEAD | cut -d" " -f2- | head -n1)"
+          info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2- | head -n1)"
           gh pr create --title "${name}" --body "${info}"
         fi
