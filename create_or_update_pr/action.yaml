@@ -21,7 +21,9 @@ runs:
       shell: bash
       run: |
         gh auth login --with-token < <(echo "${{ inputs.token }}")
-        
+        git config user.email "github-bot@nocturlab.fr"
+        git config user.name "github bot"
+  
         PRs="$(gh pr list -L100 | cut -f1)"
         id=''
         for pr in $(echo ${PR}); do
