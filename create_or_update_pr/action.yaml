@@ -45,7 +45,7 @@ runs:
           git checkout "${branch}"
         fi
         
-        if [ -n "${{ inputs.scripts }}" ]; then
+        if [ -n "${{ inputs.script }}" ]; then
           echo "Running customization script"
           
           ${{ inputs.script }}
