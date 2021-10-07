@@ -63,7 +63,7 @@ runs:
       
         branch="${{ steps.create-new-branch.outputs.branch }}"
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
-          branch="$(echo ${{ steps.get-pr-info.outputs.pr }} | cut -f3)"
+          branch="$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f3)"
         fi
         echo "::set-output name=branch::${branch}"
     - name: Checkout
