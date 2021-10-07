@@ -20,6 +20,7 @@ runs:
   using: "composite"
   steps:
     - name: Check if PR exist
+      shell: bash
       run: |
         PRs="$(gh pr list -L100 | cut -f1)"
         id=''
