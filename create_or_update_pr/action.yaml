@@ -26,7 +26,7 @@ runs:
   
         PRs="$(gh pr list -L100)"
         id=''
-        for pr in $(echo ${PR}); do
+        IFS="\n" for pr in $(echo ${PRs}); do
           _id=$(echo "${pr}" | cut -f1)
           _label=$(echo "${pr}" | cut -f2)
           
