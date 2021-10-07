@@ -20,6 +20,8 @@ runs:
     - name: Check if PR exist
       shell: bash
       run: |
+        ls -lia
+        
         gh auth login --with-token < <(echo "${{ inputs.token }}")
         git config user.email "github-bot@nocturlab.fr"
         git config user.name "github bot"
