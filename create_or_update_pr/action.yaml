@@ -24,7 +24,7 @@ runs:
         git config user.email "github-bot@nocturlab.fr"
         git config user.name "github bot"
   
-        PRs="$(gh pr list -L100 | cut -f1)"
+        PRs="$(gh pr list -L100)"
         id=''
         for pr in $(echo ${PR}); do
           _id=$(echo "${PRs}" | cut -f1)
@@ -53,12 +53,13 @@ runs:
         git show | cat
         
         
-        git push --force -u origin "${branch}"
         
         if [ -n "$id" ]; then
+          git push "${branch}"
           info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
           gh pr comment "$id" -b "${info}"
         else
+          git push -u origin "${branch}"
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
