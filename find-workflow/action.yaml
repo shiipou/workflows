@@ -47,7 +47,7 @@ runs:
             status=$(echo "${run}" | cut -f2)
             if [[ -z "${{ inputs.status }}" || "${status}" == "${{ inputs.status }}" ]]; then
               id=$(echo "${run}" | cut -f7)
-              echo "::set-output name=run::$(gh run view ${id} | head -n6 | tail -n1 | rev | cut -d' ' -f1 | cut -d')' -f2 | rev)"
+              echo "::set-output name=run::${id}"
               break
             fi
           fi
