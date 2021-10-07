@@ -49,7 +49,7 @@ runs:
       shell: bash
       id: create-new-branch
       run: |
-        if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+        if [ -z "${{ steps.get-pr-info.outputs.pr }}" ]; then
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
           git checkout -b "${branch}"
