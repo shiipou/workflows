@@ -27,8 +27,8 @@ runs:
         PRs="$(gh pr list -L100)"
         id=''
         for pr in $(echo ${PR}); do
-          _id=$(echo "${PRs}" | cut -f1)
-          _label=$(echo "${PRs}" | cut -f2)
+          _id=$(echo "${pr}" | cut -f1)
+          _label=$(echo "${pr}" | cut -f2)
           
           if [ "${_label}" == "${{ inputs.name }}" ]; then
             id=${_id}
