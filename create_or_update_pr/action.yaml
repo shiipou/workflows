@@ -52,9 +52,9 @@ runs:
         
         git push
         
+        info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
         if [ -n "$id" ]; then
-          info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
           gh pr comment "$id" -b "${info}"
         else
-          gh pr create -f
+          gh pr create --title "${name}" --body "${info}"
         fi
