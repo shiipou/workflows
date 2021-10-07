@@ -59,8 +59,6 @@ runs:
       id: get-branch-name
       shell: bash
       run: |
-        set -xe
-      
         branch="${{ steps.create-new-branch.outputs.branch }}"
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           branch="$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f3)"
@@ -72,7 +70,9 @@ runs:
         ref: ${{ steps.get-branch-name.outputs.branch }}
     - name: Run script
       shell: bash
-      run: ${{ inputs.script }}
+      run: |
+        set -xe
+        ${{ inputs.script }}
     - name: Push new changes
       shell: bash
       run: | 
