@@ -47,7 +47,7 @@ runs:
         IFS=$oldIFS
         
         if [ -n "$id" ]; then
-          git checkout ${branch}
+          git checkout "${branch}"
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
