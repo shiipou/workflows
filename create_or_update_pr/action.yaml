@@ -53,7 +53,7 @@ runs:
         git show | cat
         
         
-        git push -u origin "${branch}"
+        git push --force -u origin "${branch}"
         
         if [ -n "$id" ]; then
           info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
