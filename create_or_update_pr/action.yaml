@@ -20,13 +20,16 @@ runs:
     - name: Git authentification
       shell: bash
       run: |
+        # Login into GitHub API
         gh auth login --with-token < <(echo "${{ inputs.token }}")
+        # Set bot name to allow push
         git config user.email "github-bot@nocturlab.fr"
         git config user.name "github bot"
     - name: Get PR infos
       id: get-pr-info
       shell: bash
       run: |
+        # list all Pr to find the last open PR we want
         PRs="$(gh pr list -L100)"
         id=''
         branch=''
@@ -35,10 +38,7 @@ runs:
         IFS="
         "; 
         for pr in $(echo ${PRs}); do
-          _id=$(echo "${pr}" | cut -f1)
           _label=$(echo "${pr}" | cut -f2)
-          branch=$(echo "${pr}" | cut -f3)
-          
           if [ "${_label}" == "*${{ inputs.name }}" ]; then
             echo "::set-output name=pr::${pr}"
             break
@@ -49,6 +49,7 @@ runs:
       shell: bash
       id: create-new-branch
       run: |
+        # If PR not exist, create a new branch
         if [ -z "${{ steps.get-pr-info.outputs.pr }}" ]; then
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
@@ -59,6 +60,7 @@ runs:
       id: get-branch-name
       shell: bash
       run: |
+        # find the name of the branch from PR or generated name
         branch="${{ steps.create-new-branch.outputs.branch }}"
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           branch="$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f3)"
@@ -71,19 +73,20 @@ runs:
     - name: Run script
       shell: bash
       run: |
+        # Run the script that edit the files we need
         set -xe
         ${{ inputs.script }}
     - name: Push new changes
       shell: bash
       run: | 
+        # Push the changement to the PR branch using the correct method (PR already exist or not)
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+          id=$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f1)
           git push
-          info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
-          gh pr comment "$id" -b "${info}"
+          info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline")"
+          gh pr comment "$id" --body "${info}"
         else
           git push -u origin "${branch}"
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
-
-        
