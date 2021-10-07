@@ -26,7 +26,10 @@ runs:
   
         PRs="$(gh pr list -L100)"
         id=''
-        IFS="\n" for pr in $(echo ${PRs}); do
+        oldIFS=$IFS
+        IFS="
+        "; 
+        for pr in $(echo ${PRs}); do
           _id=$(echo "${pr}" | cut -f1)
           _label=$(echo "${pr}" | cut -f2)
           
@@ -35,6 +38,7 @@ runs:
             break
           fi
         done
+        IFS=$oldIFS
         
         branch=''
         if [ -n "$id" ]; then
