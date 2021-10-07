@@ -7,7 +7,7 @@ inputs:
     type: string
   script:
     description: 'Commands you want to execute before creation or update of the new PR'
-    required: false
+    required: true
     type: string
   token:
     description: 'The GitHub Token to call GitHub API'
@@ -45,13 +45,11 @@ runs:
           git checkout "${branch}"
         fi
         
-        if [ -n "${{ inputs.script }}" ]; then
-          echo "Running customization script"
-          
-          ${{ inputs.script }}
-          
-          git show | cat
-        fi
+        echo "Running customization script"
+
+        ${{ inputs.script }}
+
+        git show | cat
         
         if [ -n "$id" ]; then
           git push
