@@ -20,6 +20,8 @@ runs:
     - name: Check if PR exist
       shell: bash
       run: |
+        echo "${token}" | gh auth login --with-token
+        
         PRs="$(gh pr list -L100 | cut -f1)"
         id=''
         for pr in $(echo ${PR}); do
