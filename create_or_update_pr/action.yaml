@@ -40,9 +40,10 @@ runs:
           echo "$branch"
           git checkout "${branch}"
         else
-          branch="deps-bot/${{ inputs.name }}"
-          git branch "${branch//" "/"-"}"
+          branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
+          branch=${branch// /-}
           echo "$branch"
+          git branch "${branch}"
           git checkout "${branch}"
         fi
         
