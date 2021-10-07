@@ -7,17 +7,54 @@ on:
         description: 'The PR name to update or create'
         required: true
         type: string
+      script:
+        description: 'Commands you want to execute before creation or update of the new PR'
+        required: false
+        type: string
       token:
         description: 'The GitHub Token to call GitHub API'
         required: true
         type: string
 
-jobs:
-  example_job:
-    name: Pass input and secrets to my-action
-    runs-on: ubuntu-latest
+runs:
+  using: "composite"
+  steps:
     steps:
     - name: Check if PR exist
       run: |
-        id="$(gh pr list -L100 | cut -f1)"
-        [ -n "$id" ] && gh pr checkout "$id"
+        PRs="$(gh pr list -L100 | cut -f1)"
+        id=''
+        for pr in $(echo ${PR}); do
+          _id=$(echo "${PRs}" | cut -f1)
+          _label=$(echo "${PRs}" | cut -f2)
+          
+          if [ "${_label}" == "${{ inputs.name }}" ]; then
+            id=${_id}
+            break
+          fi
+        done
+        
+        branch=''
+        if [ -n "$id" ]; then
+          branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
+          git checkout "${branch}"
+        else
+          branch="deps-bot/${{ inputs.name }}"
+          git branch "${branch// /-}"
+          git checkout "${branch}"
+        fi
+        
+        if [ -n "${{ inputs.scripts }}" ]; then
+          echo "Running customization script"
+          
+          ${{ inputs.scripts }}
+        fi
+        
+        git push
+        
+        if [ -n "$id" ]; then
+          info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
+          gh pr comment "$id" -b "${info}"
+        else
+          gh pr create -f
+        fi
