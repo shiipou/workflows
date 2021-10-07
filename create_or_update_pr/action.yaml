@@ -39,9 +39,7 @@ runs:
         branch=''
         if [ -n "$id" ]; then
           branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
-          git fetch --all
-          git checkout "${branch}"
-          git pull --rebase
+          git checkout "/remote/origin/${branch}"
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
@@ -54,12 +52,13 @@ runs:
 
         git show | cat
         
+        
+        git push -u origin "${branch}"
+        
         if [ -n "$id" ]; then
-          git push
           info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
           gh pr comment "$id" -b "${info}"
         else
-          git push -u origin "${branch}"
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
