@@ -19,7 +19,6 @@ on:
 runs:
   using: "composite"
   steps:
-    steps:
     - name: Check if PR exist
       run: |
         PRs="$(gh pr list -L100 | cut -f1)"
