@@ -28,7 +28,7 @@ runs:
         id=''
         oldIFS=$IFS
         IFS="
-"; 
+        "; 
         for pr in $(echo ${PRs}); do
           _id=$(echo "${pr}" | cut -f1)
           _label=$(echo "${pr}" | cut -f2)
