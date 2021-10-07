@@ -1,0 +1,55 @@
+name: Find Workflow
+
+inputs:
+  branch:
+    description: 'The branch namewhere workflow was run'
+    required: true
+    type: string
+  workflow:
+    description: 'The workflow name to find'
+    required: true
+    type: string
+  status:
+    description: 'The run status to check'
+    required: false
+    type: string
+  token:
+    description: 'The GitHub Token to call GitHub API'
+    required: true
+    type: string
+
+outputs:
+  workflow-id:
+    description: 'The resulted workflow id'
+    value: ${{ steps.get-runs-info.outputs.workflow-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Git authentification
+      shell: bash
+      run: |
+        gh auth login --with-token < <(echo "${{ inputs.token }}")
+    - name: Get runs infos
+      id: get-runs-info
+      shell: bash
+      run: |
+        runs="$(gh run list -w "${{ inputs.workflow}}" -L100)"
+        branch=''
+                
+        oldIFS=$IFS
+        IFS="
+        ";
+        for run in $(echo ${runs});
+          branch=$(echo "${run}" | cut -f5)
+          
+          if [ "${branch}" == "${{ inputs.branch }}" ]; then
+            status=$(echo "${run}" | cut -f2)
+            if [[ -z "${{ inputs.status }}" || "${status}" == "${{ inputs.status }}" ]]; then
+              id=$(echo "${run}" | cut -f7)
+              echo "::set-output name=run::$(gh run view ${id} | head -n6 | tail -n1 | rev | cut -d' ' -f1 | cut -d')' -f2 | rev)"
+              break
+            fi
+          fi
+        done
+        IFS=$oldIFS
