@@ -41,7 +41,7 @@ runs:
           git checkout "${branch}"
         else
           branch="deps-bot/${{ inputs.name }}"
-          git branch "${branch// /-}"
+          git branch "${branch//" "/"-"}"
           echo "$branch"
           git checkout "${branch}"
         fi
