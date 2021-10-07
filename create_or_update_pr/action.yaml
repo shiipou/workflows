@@ -51,12 +51,13 @@ runs:
     - name: Create new git branch
       shell: bash
       id: create-new-branch
-      if: ${{ steps.get-pr-info.outputs.pr == '' }}
       run: |
-        branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
-        branch=${branch// /-}
-        git checkout -b "${branch}"
-        echo "::set-output name=branch::${branch}"
+        if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+          branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
+          branch=${branch// /-}
+          git checkout -b "${branch}"
+          echo "::set-output name=branch::${branch}"
+        fi
     - name: Get branch name
       id: get-branch-name
       shell: bash
