@@ -39,13 +39,13 @@ runs:
         branch=''
         if [ -n "$id" ]; then
           branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
+          git fetch --all
           git checkout "${branch}"
           git pull --rebase
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
-          git branch "${branch}"
-          git checkout "${branch}"
+          git checkout -b "${branch}"
         fi
         
         echo "Running customization script"
