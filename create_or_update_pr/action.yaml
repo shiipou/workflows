@@ -20,6 +20,7 @@ runs:
     - name: Check if PR exist
       shell: bash
       run: |
+        set -xe
         git status
         
         gh auth login --with-token < <(echo "${{ inputs.token }}")
@@ -45,7 +46,8 @@ runs:
         branch=''
         if [ -n "$id" ]; then
           branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
-          git switch "${branch}"
+          echo $branch
+          git checkout ${branch}
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
