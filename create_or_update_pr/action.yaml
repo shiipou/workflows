@@ -53,11 +53,11 @@ runs:
           ${{ inputs.script }}
         fi
         
-        git push
-        
         info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline" | cat)"
         if [ -n "$id" ]; then
+          git push
           gh pr comment "$id" -b "${info}"
         else
+          git push -u origin "${branch}"
           gh pr create --title "${name}" --body "${info}"
         fi
