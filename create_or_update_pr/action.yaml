@@ -20,7 +20,7 @@ runs:
     - name: Check if PR exist
       shell: bash
       run: |
-        echo "${token}" | gh auth login --with-token
+        gh auth login --with-token < <(echo "${{ inputs.token }}")
         
         PRs="$(gh pr list -L100 | cut -f1)"
         id=''
