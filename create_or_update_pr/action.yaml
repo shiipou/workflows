@@ -29,12 +29,15 @@ runs:
   
         PRs="$(gh pr list -L100)"
         id=''
+        branch=''
+        
         oldIFS=$IFS
         IFS="
         "; 
         for pr in $(echo ${PRs}); do
           _id=$(echo "${pr}" | cut -f1)
           _label=$(echo "${pr}" | cut -f2)
+          branch=$(echo "${pr}" | cut -f3)
           
           if [ "${_label}" == "${{ inputs.name }}" ]; then
             id=${_id}
@@ -43,10 +46,7 @@ runs:
         done
         IFS=$oldIFS
         
-        branch=''
         if [ -n "$id" ]; then
-          branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
-          echo $branch
           git checkout ${branch}
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
@@ -58,9 +58,7 @@ runs:
 
         ${{ inputs.script }}
 
-        git show | cat
-        
-        
+        git show
         
         if [ -n "$id" ]; then
           git push "${branch}"
