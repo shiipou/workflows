@@ -1,0 +1,24 @@
+name: Rerun Workflow
+
+inputs:
+  workflow:
+    description: 'The workflow id to rerun'
+    required: true
+    type: string
+  token:
+    description: 'The GitHub Token to call GitHub API'
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Git authentification
+      shell: bash
+      run: |
+        gh auth login --with-token < <(echo "${{ inputs.token }}")
+    - name: Get runs infos
+      id: get-runs-info
+      shell: bash
+      run: |
+        gh run rerun ${{inputs.workflow}}
