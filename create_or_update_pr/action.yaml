@@ -37,12 +37,10 @@ runs:
         branch=''
         if [ -n "$id" ]; then
           branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
-          echo "$branch"
           git checkout "${branch}"
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
-          echo "$branch"
           git branch "${branch}"
           git checkout "${branch}"
         fi
@@ -52,7 +50,7 @@ runs:
           
           ${{ inputs.script }}
           
-          git log -n 5 | cat
+          git show | cat
         fi
         
         if [ -n "$id" ]; then
