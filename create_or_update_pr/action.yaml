@@ -51,6 +51,8 @@ runs:
           echo "Running customization script"
           
           ${{ inputs.script }}
+          
+          git log -n 5 | cat
         fi
         
         if [ -n "$id" ]; then
