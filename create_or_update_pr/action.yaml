@@ -43,7 +43,7 @@ runs:
         branch=''
         if [ -n "$id" ]; then
           branch="$(gh pr view "$id" --json headRefName --jq ".headRefName" | cat)"
-          git checkout "/remote/origin/${branch}"
+          git checkout "${branch}"
         else
           branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
           branch=${branch// /-}
