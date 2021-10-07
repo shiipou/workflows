@@ -20,9 +20,6 @@ runs:
     - name: Git authentification
       shell: bash
       run: |
-        set -xe
-        git status
-        
         gh auth login --with-token < <(echo "${{ inputs.token }}")
         git config user.email "github-bot@nocturlab.fr"
         git config user.name "github bot"
@@ -62,6 +59,8 @@ runs:
       id: get-branch-name
       shell: bash
       run: |
+        set -xe
+      
         branch="${{ steps.create-new-branch.outputs.branch }}"
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           branch="$(echo ${{ steps.get-pr-info.outputs.pr }} | cut -f3)"
