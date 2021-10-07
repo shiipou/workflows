@@ -39,7 +39,7 @@ runs:
           _label=$(echo "${pr}" | cut -f2)
           branch=$(echo "${pr}" | cut -f3)
           
-          if [ "${_label}" == "${{ inputs.name }}" ]; then
+          if [ "${_label}" == "*${{ inputs.name }}" ]; then
             echo "::set-output name=pr::${pr}"
             break
           fi
