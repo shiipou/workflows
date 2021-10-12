@@ -33,6 +33,7 @@ runs:
       id: get-pr-info
       shell: bash
       run: |
+        set -xe
         # list all Pr to find the last open PR we want
         PRs="$(gh pr list -L100)"
         id=''
