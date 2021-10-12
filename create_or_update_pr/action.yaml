@@ -75,7 +75,6 @@ runs:
       run: |
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           git checkout "${{ steps.get-branch-name.outputs.branch }}"
-          git pull
         fi
     - name: Run script
       shell: bash
@@ -86,9 +85,10 @@ runs:
     - name: Push new changes
       shell: bash
       run: |
+        set -xe
         # Push the changement to the PR branch using the correct method (PR already exist or not)
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
-          git fetch
+          git pull
           id=$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f1)
           git push
           info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline")"
