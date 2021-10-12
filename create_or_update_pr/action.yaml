@@ -44,7 +44,7 @@ runs:
         "; 
         for pr in $(echo ${PRs}); do
           _label=$(echo "${pr}" | cut -f2)
-          if [ "${_label}" == "*${{ inputs.name }}" ]; then
+          if [[ "${_label}" == "*${{ inputs.name }}" ]]; then
             echo "::set-output name=pr::${pr}"
             break
           fi
