@@ -69,7 +69,7 @@ runs:
     - name: Checkout
       shell: bash
       run: |
-        if [ "${{ steps.get-pr-info.outputs.pr }}" == '' ]; then
+        if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           git checkout "${{ steps.get-branch-name.outputs.branch }}"
         fi
     - name: Run script
@@ -88,7 +88,7 @@ runs:
           info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline")"
           gh pr comment "$id" --body "${info}"
         else
-          git push -u origin "${branch}"
+          git push -u origin "${{ steps.get-branch-name.outputs.branch }}"
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
