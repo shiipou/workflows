@@ -74,6 +74,7 @@ runs:
       shell: bash
       run: |
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+          git fetch
           git checkout origin "${{ steps.get-branch-name.outputs.branch }}"
         fi
     - name: Run script
