@@ -67,6 +67,7 @@ runs:
         fi
         echo "::set-output name=branch::${branch}"
     - name: Checkout
+      if: ${{ steps.get-pr-info.outputs.pr == "" }}
       uses: actions/checkout@v2
       with:
         ref: ${{ steps.get-branch-name.outputs.branch }}
