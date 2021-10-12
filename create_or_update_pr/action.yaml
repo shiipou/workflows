@@ -17,10 +17,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Change user
-      uses: actions/checkout@v2
-      with:
-        token: ${{ inputs.token }}
     - name: Git authentification
       shell: bash
       run: |
@@ -74,6 +70,7 @@ runs:
       shell: bash
       run: |
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+          git config --local "http.https://github.com/.extraheader" "AUTHORIZATION: basic ${{ inputs.token }}"
           git checkout "${{ steps.get-branch-name.outputs.branch }}"
         fi
     - name: Run script
