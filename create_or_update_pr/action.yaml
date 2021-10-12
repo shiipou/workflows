@@ -75,6 +75,7 @@ runs:
       run: |
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           git checkout "${{ steps.get-branch-name.outputs.branch }}"
+          git pull
         fi
     - name: Run script
       shell: bash
