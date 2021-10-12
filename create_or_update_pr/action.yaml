@@ -86,6 +86,7 @@ runs:
         
         # Push the changement to the PR branch using the correct method (PR already exist or not)
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+          git fetch
           id=$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f1)
           git push
           info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline")"
