@@ -17,7 +17,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Git authentification
+    - name: GitHub authentification
       shell: bash
       run: |
         # Login into GitHub API
@@ -25,6 +25,10 @@ runs:
         # Set bot name to allow push
         git config user.email "github-bot@nocturlab.fr"
         git config user.name "github bot"
+    - name: Switch Git user
+      uses: actions/checkout@v2
+      with:
+        token: ${{ inputs.token }}
     - name: Get PR infos
       id: get-pr-info
       shell: bash
@@ -81,9 +85,6 @@ runs:
     - name: Push new changes
       shell: bash
       run: |
-        # Login with input token to push instead of github token
-        git config --local "http.https://github.com/.extraheader" "AUTHORIZATION: basic ${{ inputs.token }}"
-        
         # Push the changement to the PR branch using the correct method (PR already exist or not)
         if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
           git fetch
