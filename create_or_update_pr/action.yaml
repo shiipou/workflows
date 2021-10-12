@@ -84,6 +84,3 @@ runs:
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
-
-        # Restore default login for next usage of pipeline
-        git config --local "http.https://github.com/.extraheader" "AUTHORIZATION: basic ${{ secrets.GITHUB_TOKEN }}"
