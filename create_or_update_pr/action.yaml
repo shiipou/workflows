@@ -67,10 +67,11 @@ runs:
         fi
         echo "::set-output name=branch::${branch}"
     - name: Checkout
-      if: ${{ steps.get-pr-info.outputs.pr == "" }}
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ steps.get-branch-name.outputs.branch }}
+      shell: bash
+      run: |
+        if [ "${{ steps.get-pr-info.outputs.pr }}" == '' ]; then
+          git checkout "${{ steps.get-branch-name.outputs.branch }}"
+        fi
     - name: Run script
       shell: bash
       run: |
