@@ -76,7 +76,7 @@ runs:
           info="$(gh pr view "$id" --json commits --jq ".commits[-1].messageHeadline")"
           gh pr comment "$id" --body "${info}"
         else
-          git push -u origin "${{ steps>get-pr-info.outputs.branch }}"
+          git push -u origin "${{ steps.get-pr-info.outputs.branch }}"
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
