@@ -33,49 +33,31 @@ runs:
       id: get-pr-info
       shell: bash
       run: |
-        # list all Pr to find the last open PR we want
-        PRs="$(gh pr list -L100)"
-        id=''
-        branch=''
+        # Find PR that use the generated name branch as head.
+        branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
+        branch=${branch// /-}
+        echo "::set-output name=branch::${branch}"
         
-        oldIFS=$IFS
-        IFS="
-        "; 
-        for pr in $(echo ${PRs}); do
-          _label=$(echo "${pr}" | cut -f2)
-          if [[ "${_label}" == *"${{ inputs.name }}" ]]; then
-            echo "::set-output name=pr::${pr}"
-            break
-          fi
-        done
-        IFS=$oldIFS
+        _id=$(gh pr list -H "${branch}" | cut -f1)
+        _label=$(gh pr list -H "${branch}" | cut -f2)
+        if [ -n "${_id}" ]; then
+          echo "::set-output name=id::${_id}"
+          echo "::set-output name=pr::${_label}"
+        fi
     - name: Create new git branch
       shell: bash
-      id: create-new-branch
       run: |
         # If PR not exist, create a new branch
-        if [ -z "${{ steps.get-pr-info.outputs.pr }}" ]; then
-          branch="$(echo "deps-bot/${{ inputs.name }}" |  tr '[:upper:]' '[:lower:]')"
-          branch=${branch// /-}
+        if [ -z "${{ steps.get-pr-info.outputs.id }}" ]; then
+          branch="${{ steps.get-pr-info.outputs.branch }}"
           git checkout -b "${branch}"
-          echo "::set-output name=branch::${branch}"
         fi
-    - name: Get branch name
-      id: get-branch-name
-      shell: bash
-      run: |
-        # find the name of the branch from PR or generated name
-        branch="${{ steps.create-new-branch.outputs.branch }}"
-        if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
-          branch="$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f3)"
-        fi
-        echo "::set-output name=branch::${branch}"
     - name: Checkout
       shell: bash
       run: |
-        if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
+        if [ -n "${{ steps.get-pr-info.outputs.id }}" ]; then
           git fetch
-          git checkout "${{ steps.get-branch-name.outputs.branch }}"
+          git checkout "${{ steps.get-pr-info.outputs.branch }}"
         fi
     - name: Run script
       shell: bash
@@ -88,13 +70,13 @@ runs:
       run: |
         set -xe
         # Push the changement to the PR branch using the correct method (PR already exist or not)
-        if [ -n "${{ steps.get-pr-info.outputs.pr }}" ]; then
-          id=$(echo "${{ steps.get-pr-info.outputs.pr }}" | cut -f1)
+        if [ -n "${{ steps.get-pr-info.outputs.id }}" ]; then
+          id="${{ steps.get-pr-info.outputs.id }}"
           git push
-          info="$(gh pr view "$id" --json commits --jq ".commits[0].messageHeadline")"
+          info="$(gh pr view "$id" --json commits --jq ".commits[-1].messageHeadline")"
           gh pr comment "$id" --body "${info}"
         else
-          git push -u origin "${{ steps.get-branch-name.outputs.branch }}"
+          git push -u origin "${{ steps>get-pr-info.outputs.branch }}"
           info="$(git log --no-decorate --pretty=oneline -n 1 | cut -d" " -f2-)"
           gh pr create --title "${{ inputs.name }}" --body "${info}"
         fi
