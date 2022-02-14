@@ -1,4 +1,6 @@
 name: Create or update PR
+description: 'A simple but powerful GitHub Action to link workflows and manage dependencies between projects. #actionshackathon21'
+author: 'shiipou'
 
 inputs:
   name:
@@ -24,7 +26,7 @@ runs:
         gh auth login --with-token < <(echo "${{ inputs.token }}")
         # Set bot name to allow push
         git config user.email "github-bot@nocturlab.fr"
-        git config user.name "github bot"
+        git config user.name "GitHub Bot"
     - name: Switch Git user
       uses: actions/checkout@v2
       with:
@@ -45,6 +47,7 @@ runs:
           echo "::set-output name=pr::${_label}"
         fi
     - name: Create new git branch
+      if: steps.get-pr-info.outputs.id == ''
       shell: bash
       run: |
         # If PR not exist, create a new branch
@@ -53,6 +56,7 @@ runs:
           git checkout -b "${branch}"
         fi
     - name: Checkout
+      if: steps.get-pr-info.outputs.id != ''
       shell: bash
       run: |
         if [ -n "${{ steps.get-pr-info.outputs.id }}" ]; then
@@ -68,7 +72,9 @@ runs:
     - name: Push new changes
       shell: bash
       run: |
+        # Set debug mode to show logs from the script inside of runnign workflow's logs
         set -xe
+        
         # Push the changement to the PR branch using the correct method (PR already exist or not)
         if [ -n "${{ steps.get-pr-info.outputs.id }}" ]; then
           id="${{ steps.get-pr-info.outputs.id }}"
